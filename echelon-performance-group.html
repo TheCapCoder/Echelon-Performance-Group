@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Echelon Performance Group</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: "Inter", sans-serif;
+        background: #0a0f1c;
+        color: white;
+        overflow-x: hidden;
+    }
+
+    /* Background image layer */
+    .bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url("https://images.unsplash.com/photo-1542751371-adc38448a05e") center/cover no-repeat;
+        opacity: 0.12;
+        filter: blur(1px);
+        z-index: -2;
+    }
+
+    /* Animated gradient overlay */
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at 20% 20%, rgba(0,255,200,0.12), transparent 40%),
+                    radial-gradient(circle at 80% 60%, rgba(120,80,255,0.12), transparent 40%),
+                    linear-gradient(180deg, #050816, #0a0f1c);
+        z-index: -1;
+        animation: floatBG 12s infinite ease-in-out;
+    }
+ 
+
+    @keyframes floatBG {
+        0% { transform: scale(1) translateY(0px); }
+        50% { transform: scale(1.05) translateY(-10px); }
+        100% { transform: scale(1) translateY(0px); }
+    }
+   
+    header {
+        padding: 40px 60px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo {
+        font-family: "Orbitron", sans-serif;
+        font-size: 22px;
+        letter-spacing: 3px;
+        opacity: 0.8;
+    }
+
+    nav a {
+        margin-left: 25px;
+        text-decoration: none;
+        color: rgba(255,255,255,0.7);
+        transition: 0.3s;
+    }
+
+    nav a:hover {
+        color: #00ffd5;
+    }
+
+    /* HERO SECTION */
+.hero {
+    height: 60vh; /* smaller so everything fits above fold */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 20px;
+}
+
+    .brand {
+        font-family: "Orbitron", sans-serif;
+        font-size: 52px;
+        font-weight: 800;
+        letter-spacing: 6px;
+        text-transform: uppercase;
+        background: linear-gradient(90deg, #00ffd5, #7a5cff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: glow 3s infinite ease-in-out;
+    }
+
+    @keyframes glow {
+        0% { text-shadow: 0 0 10px rgba(0,255,213,0.2); }
+        50% { text-shadow: 0 0 25px rgba(122,92,255,0.4); }
+        100% { text-shadow: 0 0 10px rgba(0,255,213,0.2); }
+    }
+
+    .tagline {
+        margin-top: 20px;
+        max-width: 600px;
+        font-size: 15px;
+        color: rgba(255,255,255,0.7);
+        line-height: 1.6;
+    }
+
+    .buttons {
+        margin-top: 35px;
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .btn {
+        padding: 14px 24px;
+        border-radius: 10px;
+        border: 1px solid rgba(255,255,255,0.15);
+        background: rgba(255,255,255,0.05);
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        font-weight: 500;
+    }
+
+    .btn:hover {
+        transform: translateY(-3px) scale(1.05);
+        border-color: #00ffd5;
+        box-shadow: 0 10px 25px rgba(0,255,213,0.15);
+    }
+
+    .btn.primary {
+        background: linear-gradient(90deg, #00ffd5, #7a5cff);
+        border: none;
+        color: black;
+        font-weight: 600;
+    }
+
+    /* FLOATING ORBS */
+    .orb {
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.15;
+        animation: drift 10s infinite ease-in-out;
+    }
+
+    .orb.one {
+        background: #00ffd5;
+        top: 20%;
+        left: 10%;
+    }
+
+    .orb.two {
+        background: #7a5cff;
+        bottom: 10%;
+        right: 15%;
+        animation-delay: 2s;
+    }
+
+    @keyframes drift {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-40px); }
+        100% { transform: translateY(0px); }
+    }
+
+    /* FEATURES */
+    .features {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(180px, 1fr));
+        gap: 12px;
+        padding: 25px 40px;
+    }
+
+    .card {
+        padding: 14px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 15px;
+        transition: 0.3s;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(0,255,213,0.3);
+    }
+
+    .card h3 {
+        font-family: "Orbitron";
+        margin-bottom: 13px;
+    }
+
+    .card p {
+        color: rgba(255,255,255,0.65);
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    footer {
+        text-align: center;
+        padding: 40px;
+        color: rgba(255,255,255,0.4);
+    }
+.construction-banner {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+
+    padding: 10px 0;
+    background: rgba(255, 140, 0, 0.08);
+    border-top: 1px solid rgba(255, 140, 0, 0.25);
+    border-bottom: 1px solid rgba(255, 140, 0, 0.25);
+
+    backdrop-filter: blur(8px);
+    font-family: "Orbitron", sans-serif;
+    letter-spacing: 3px;
+    font-size: 12px;
+    color: rgba(255, 180, 80, 0.9);
+}
+
+.construction-banner .icon {
+    font-size: 14px;
+    animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+.float-layer {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+}
+
+/* base floating object */
+.float-node {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border-radius: 20px;
+    background: rgba(0, 255, 213, 0.08);
+    filter: blur(1px);
+    animation: floatMove 18s infinite ease-in-out;
+}
+
+/* variations */
+.n1 { top: 10%; left: 15%; animation-duration: 22s; }
+.n2 { top: 60%; left: 20%; background: rgba(122, 92, 255, 0.08); animation-duration: 26s; }
+.n3 { top: 30%; right: 10%; animation-duration: 20s; }
+.n4 { bottom: 15%; right: 25%; background: rgba(0, 255, 213, 0.06); animation-duration: 28s; }
+
+@keyframes floatMove {
+    0%   { transform: translate(0, 0) scale(1); }
+    50%  { transform: translate(40px, -60px) scale(1.1); }
+    100% { transform: translate(0, 0) scale(1); }
+}
+.intro {
+    position: fixed;
+    inset: 0;
+    background: #050816;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+
+    animation: introFade 2.8s ease forwards;
+}
+
+.logo-svg text {
+    font-family: "Orbitron", sans-serif;
+    font-size: 64px;
+    fill: none;
+    stroke: rgba(0,255,213,0.9);
+    stroke-width: 1.5px;
+
+    stroke-dasharray: 400;
+    stroke-dashoffset: 400;
+
+    animation: draw 1.4s ease forwards;
+}
+
+/* DRAW EFFECT */
+@keyframes draw {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* ZOOM OUT + FADE */
+@keyframes introFade {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    60% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(6);
+        visibility: hidden;
+    }
+}
+</style>
+</head>
+
+<body>
+<div class="intro">
+    <svg class="logo-svg" viewBox="0 0 200 100">
+        <text x="50%" y="50%" text-anchor="middle">EPG</text>
+    </svg>
+</div>
+<div class="bg"></div>
+<div class="overlay"></div>
+
+<div class="orb one"></div>
+<div class="orb two"></div>
+
+<div class="float-layer">
+    <div class="float-node n1"></div>
+    <div class="float-node n2"></div>
+    <div class="float-node n3"></div>
+    <div class="float-node n4"></div>
+</div>
+
+<header>
+    <div class="logo">ECHELON PERFORMANCE GROUP</div>
+    <nav>
+        <a href="#">Program</a>
+        <a href="#">Athlete Care</a>
+        <a href="#">Nutrition</a>
+        <a href="#">Mental Prep</a>
+    </nav>
+</header>
+
+<div class="construction-banner">
+    <div class="icon">🚧</div>
+    <div class="text">UNDER CONSTRUCTION</div>
+</div>
+
+<section class="hero">
+    <div class="brand">ECHELON</div>
+    <div class="tagline">
+        Elite performance infrastructure for competitive esports athletes.
+        Physical conditioning. Mental resilience. Structured excellence.
+    </div>
+
+    <div class="buttons">
+        <button class="btn primary">Enter Program</button>
+        <button class="btn">Explore System</button>
+        <button class="btn">Athlete Dashboard</button>
+    </div>
+</section>
+
+<section class="features">
+    <div class="card">
+        <h3>Physical Conditioning</h3>
+        <p>Structured training protocols designed to enhance reaction speed, endurance, posture, and long-term health.</p>
+    </div>
+
+    <div class="card">
+        <h3>Mental Performance</h3>
+        <p>Focus training, tilt control systems, cognitive load management, and competitive psychology frameworks.</p>
+    </div>
+
+    <div class="card">
+        <h3>Nutrition Protocols</h3>
+        <p>Performance-based diet systems optimized for reaction time, energy stability, and recovery.</p>
+    </div>
+
+    <div class="card">
+        <h3>Competition Prep</h3>
+        <p>Pre-match rituals, warmup systems, and structured competitive readiness routines.</p>
+    </div>
+</section>
+
+<footer>
+    © 2026 Echelon Performance Group — Built for the next generation of elite digital athletes
+</footer>
+<script>
+    setTimeout(() => {
+        document.querySelector(".intro").style.display = "none";
+    }, 2800);
+</script>
+</body>
+</html>
