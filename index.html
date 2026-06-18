@@ -122,17 +122,30 @@ nav a:hover{color:#00ffd5}
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);background:rgba(0,255,213,.12);border:1px solid rgba(0,255,213,.4);backdrop-filter:blur(12px);color:#00ffd5;font-family:"Orbitron",sans-serif;font-size:11px;letter-spacing:2px;padding:12px 28px;border-radius:30px;z-index:9998;transition:transform .4s cubic-bezier(.22,1,.36,1),opacity .4s;opacity:0;white-space:nowrap}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 
+/* ── OS PICKER ── */
+.os-picker-wrap{margin-bottom:28px;padding:24px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:16px}
+.os-picker-label{font-family:"Orbitron",sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:16px}
+.os-picker-row{display:flex;gap:14px}
+.os-option{flex:1;padding:20px;border:2px solid rgba(255,255,255,.08);border-radius:14px;cursor:pointer;text-align:center;transition:all .25s;background:rgba(255,255,255,.03)}
+.os-option:hover{border-color:rgba(0,255,213,.35);background:rgba(0,255,213,.05)}
+.os-option.selected{border-color:#00ffd5;background:rgba(0,255,213,.08);box-shadow:0 0 20px rgba(0,255,213,.12)}
+.os-icon{font-size:28px;margin-bottom:8px}
+.os-name{font-family:"Orbitron",sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;color:#fff;margin-bottom:4px}
+.os-desc{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:1px}
+.os-option.selected .os-name{color:#00ffd5}
+.os-required-msg{display:none;margin-top:12px;font-size:12px;color:#ffaa44;letter-spacing:1px;text-align:center}
+
 footer{text-align:center;padding:40px;color:rgba(255,255,255,.3);font-size:13px;position:relative;z-index:2}
 </style>
 </head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XE4DWTRCRB"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-3S96D1ZZ89"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', 'G-XE4DWTRCRB');
+  gtag('config', 'G-3S96D1ZZ89');
 </script>
 <body>
 
@@ -215,7 +228,9 @@ footer{text-align:center;padding:40px;color:rgba(255,255,255,.3);font-size:13px;
   <div style="position:relative;width:100%;padding-bottom:56.25%;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.4)">
 <iframe
   src="https://www.youtube.com/watch?v=dr2QIfecGCU"
+  title="Echelon OS Demo"
   style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:16px;border:none"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
   allowfullscreen
 ></iframe>
   </div>
@@ -302,6 +317,24 @@ footer{text-align:center;padding:40px;color:rgba(255,255,255,.3);font-size:13px;
       <div class="purchase-sub">One app. Everything you need to compete at your ceiling.</div>
     </div>
 
+    <!-- OS PICKER -->
+    <div class="os-picker-wrap">
+      <div class="os-picker-label">Step 1 — Choose your platform</div>
+      <div class="os-picker-row">
+        <div class="os-option" id="os-mac" onclick="selectOS('mac')">
+          <div class="os-icon">🍎</div>
+          <div class="os-name">macOS</div>
+          <div class="os-desc">.dmg installer</div>
+        </div>
+        <div class="os-option" id="os-win" onclick="selectOS('win')">
+          <div class="os-icon">🪟</div>
+          <div class="os-name">Windows</div>
+          <div class="os-desc">.exe installer</div>
+        </div>
+      </div>
+      <div class="os-required-msg" id="os-required-msg">⚠ Please select your platform before adding to cart</div>
+    </div>
+
     <!-- Product: Lifetime -->
     <div class="product-card">
       <div class="product-top">
@@ -356,111 +389,144 @@ footer{text-align:center;padding:40px;color:rgba(255,255,255,.3);font-size:13px;
 
 <script>
 /* ══ INTRO ══ */
-setTimeout(()=>{
-  const intro = document.getElementById('intro');
-  intro.style.display = 'none';
-}, 2800);
+setTimeout(()=>{ document.getElementById('intro').style.display='none'; }, 2800);
 
 /* ══ PAGES ══ */
 function showPage(name){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  const target = document.getElementById('page-'+name);
-  if(target) target.classList.add('active');
+  const t=document.getElementById('page-'+name);
+  if(t) t.classList.add('active');
   window.scrollTo(0,0);
+}
+
+/* ══ OS SELECTION ══ */
+let selectedOS = null;
+
+function selectOS(os){
+  selectedOS = os;
+  document.getElementById('os-mac').classList.toggle('selected', os==='mac');
+  document.getElementById('os-win').classList.toggle('selected', os==='win');
+  document.getElementById('os-required-msg').style.display='none';
+  if(cart['lifetime']){
+    const osLabel = os==='mac'?'macOS':'Windows';
+    cart['lifetime'].os = os;
+    cart['lifetime'].desc = 'Full app, all features, lifetime updates — '+osLabel;
+    renderCart();
+  }
 }
 
 /* ══ CART STATE ══ */
 const PRODUCTS = {
-  lifetime: { name:'Echelon OS — Lifetime', desc:'Full app, all features, lifetime updates', price:14.99 }
+  lifetime:{ name:'Echelon OS — Lifetime', desc:'Full app, all features, lifetime updates', price:14.99 }
 };
 let cart = {};
 
 function updateCartBadge(){
-  const count = Object.keys(cart).length;
-  const badge = document.getElementById('cart-count-badge');
-  if(badge){
-    badge.textContent = count;
-    badge.style.display = count > 0 ? 'flex' : 'none';
-  }
+  const count=Object.keys(cart).length;
+  const badge=document.getElementById('cart-count-badge');
+  if(badge){ badge.textContent=count; badge.style.display=count>0?'flex':'none'; }
 }
 
 function addToCart(id){
-  cart[id] = PRODUCTS[id];
+  if(!selectedOS){
+    document.getElementById('os-required-msg').style.display='block';
+    document.getElementById('os-mac').scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  const osLabel=selectedOS==='mac'?'macOS':'Windows';
+  cart[id]={ ...PRODUCTS[id], os:selectedOS, desc:'Full app, all features, lifetime updates — '+osLabel };
   updateCartBadge();
   renderCart();
-  /* Update button states */
-  const cartBtn = document.getElementById('cart-btn-'+id);
-  const gotoBtn = document.getElementById('goto-btn-'+id);
-  if(cartBtn){ cartBtn.textContent = '✓ Added'; cartBtn.classList.add('in-cart'); cartBtn.disabled = true; }
+  const cartBtn=document.getElementById('cart-btn-'+id);
+  const gotoBtn=document.getElementById('goto-btn-'+id);
+  if(cartBtn){ cartBtn.textContent='✓ Added ('+osLabel+')'; cartBtn.classList.add('in-cart'); cartBtn.disabled=true; }
   if(gotoBtn){ gotoBtn.classList.add('visible'); }
-  showToast('Added to cart');
+  showToast('Added to cart — '+osLabel);
 }
 
 function removeFromCart(id){
   delete cart[id];
   updateCartBadge();
   renderCart();
-  /* Reset purchase page buttons */
-  const cartBtn = document.getElementById('cart-btn-'+id);
-  const gotoBtn = document.getElementById('goto-btn-'+id);
-  if(cartBtn){ cartBtn.textContent = '+ Add to Cart'; cartBtn.classList.remove('in-cart'); cartBtn.disabled = false; }
+  const cartBtn=document.getElementById('cart-btn-'+id);
+  const gotoBtn=document.getElementById('goto-btn-'+id);
+  if(cartBtn){ cartBtn.textContent='+ Add to Cart'; cartBtn.classList.remove('in-cart'); cartBtn.disabled=false; }
   if(gotoBtn){ gotoBtn.classList.remove('visible'); }
 }
 
 function renderCart(){
-  const list = document.getElementById('cart-items-list');
-  const totalSec = document.getElementById('cart-total-section');
-  const emptyMsg = document.getElementById('cart-empty-msg');
-  const totalDisplay = document.getElementById('cart-total-display');
-  const keys = Object.keys(cart);
-
-  if(keys.length === 0){
-    list.innerHTML = '';
-    totalSec.style.display = 'none';
-    emptyMsg.style.display = 'block';
-    return;
-  }
-
-  emptyMsg.style.display = 'none';
-  totalSec.style.display = 'block';
-
-  let total = 0;
-  list.innerHTML = keys.map(id => {
-    const p = cart[id];
-    total += p.price;
-    return `
-      <div class="cart-item">
-        <div>
-          <div class="cart-item-name">${p.name}</div>
-          <div class="cart-item-desc">${p.desc}</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <div class="cart-item-price">$${p.price}</div>
-          <button class="cart-remove" onclick="removeFromCart('${id}')" title="Remove">×</button>
-        </div>
-      </div>`;
+  const list=document.getElementById('cart-items-list');
+  const totalSec=document.getElementById('cart-total-section');
+  const emptyMsg=document.getElementById('cart-empty-msg');
+  const totalDisplay=document.getElementById('cart-total-display');
+  const keys=Object.keys(cart);
+  if(keys.length===0){ list.innerHTML=''; totalSec.style.display='none'; emptyMsg.style.display='block'; return; }
+  emptyMsg.style.display='none'; totalSec.style.display='block';
+  let total=0;
+  list.innerHTML=keys.map(id=>{
+    const p=cart[id]; total+=p.price;
+    const osTag=p.os?`<span style="display:inline-block;margin-top:6px;padding:3px 10px;border-radius:20px;font-size:10px;letter-spacing:1px;background:rgba(0,255,213,.1);border:1px solid rgba(0,255,213,.25);color:#00ffd5">${p.os==='mac'?'🍎 macOS':'🪟 Windows'}</span>`:'';
+    return `<div class="cart-item">
+      <div>
+        <div class="cart-item-name">${p.name}</div>
+        <div class="cart-item-desc">${p.desc}</div>
+        ${osTag}
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="cart-item-price">$${p.price}</div>
+        <button class="cart-remove" onclick="removeFromCart('${id}')" title="Remove">×</button>
+      </div>
+    </div>`;
   }).join('');
-  totalDisplay.textContent = '$' + total;
+  totalDisplay.textContent='$'+total.toFixed(2);
 }
 
 /* ══ PAYMENT ══ */
 function payNow(){
-  if(Object.keys(cart).length === 0){
-    showToast('Add an item to cart first');
-    return;
-  }
-  /* ── Replace the URL below with your actual PayPal payment link ── */
-  const PAYPAL_URL = 'https://www.paypal.com/ncp/payment/QABAUV99383VA';
-  window.open(PAYPAL_URL, '_blank');
+  if(Object.keys(cart).length===0){ showToast('Add an item to cart first'); return; }
+  const item=cart['lifetime'];
+  const osLabel=item&&item.os?(item.os==='mac'?'macOS':'Windows'):'Not specified';
+  const PAYPAL_URL='https://www.paypal.com/ncp/payment/QABAUV99383VA';
+  showOSConfirmModal(osLabel, PAYPAL_URL);
+}
+
+function showOSConfirmModal(osLabel, url){
+  const existing=document.getElementById('confirm-modal');
+  if(existing) existing.remove();
+  const modal=document.createElement('div');
+  modal.id='confirm-modal';
+  modal.innerHTML=`
+    <div style="position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);z-index:9990;display:flex;align-items:center;justify-content:center;padding:20px">
+      <div style="background:#0d1526;border:1px solid rgba(0,255,213,.2);border-radius:20px;padding:40px;max-width:420px;width:100%;text-align:center">
+        <div style="font-family:'Orbitron',sans-serif;font-size:16px;font-weight:800;letter-spacing:2px;background:linear-gradient(90deg,#00ffd5,#7a5cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px">Confirm Your Order</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.45);letter-spacing:1px;margin-bottom:28px">Review before proceeding to PayPal</div>
+        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:18px;margin-bottom:20px;text-align:left">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <span style="font-family:'Orbitron',sans-serif;font-size:12px;color:#fff;letter-spacing:1px">Echelon OS — Lifetime</span>
+            <span style="font-family:'Orbitron',sans-serif;font-size:18px;font-weight:800;background:linear-gradient(90deg,#00ffd5,#7a5cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent">$14.99</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(0,255,213,.06);border:1px solid rgba(0,255,213,.2);border-radius:8px">
+            <span style="font-size:18px">${osLabel==='macOS'?'🍎':'🪟'}</span>
+            <span style="font-size:12px;color:#00ffd5;letter-spacing:1px;font-family:'Orbitron',sans-serif">Platform: ${osLabel}</span>
+          </div>
+        </div>
+        <div style="font-size:12px;color:rgba(255,255,255,.4);line-height:1.7;margin-bottom:24px;padding:12px;background:rgba(255,170,0,.05);border:1px solid rgba(255,170,0,.15);border-radius:10px">
+          ⚠ When PayPal opens, add <strong style="color:#00ffd5">"${osLabel}"</strong> in the message/note field so we send you the correct download file.
+        </div>
+        <div style="display:flex;gap:10px">
+          <button onclick="document.getElementById('confirm-modal').remove()" style="flex:1;padding:13px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(255,255,255,.5);font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:1px;cursor:pointer;transition:.2s">Go Back</button>
+          <button onclick="document.getElementById('confirm-modal').remove();window.open('${url}','_blank')" style="flex:2;padding:13px;border-radius:10px;border:none;background:linear-gradient(90deg,#00ffd5,#7a5cff);color:#000;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:800;letter-spacing:2px;cursor:pointer">Continue to PayPal →</button>
+        </div>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
 }
 
 /* ══ TOAST ══ */
 function showToast(msg){
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(t._t);
-  t._t = setTimeout(()=>t.classList.remove('show'), 2600);
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),2600);
 }
 </script>
 </body>
